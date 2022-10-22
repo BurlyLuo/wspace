@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: nettool
-        image: burlyluo/nettool
+        image: burlyluo/nettool:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
