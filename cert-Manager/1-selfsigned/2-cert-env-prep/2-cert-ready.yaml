@@ -26,6 +26,9 @@ spec:
     name: selfsigned-issuer
     kind: ClusterIssuer
     group: cert-manager.io
+
+# above is the root issuer and root cert
+# below is the app issuer adn app certrequest
 ---
 apiVersion: cert-manager.io/v1
 kind: Issuer
