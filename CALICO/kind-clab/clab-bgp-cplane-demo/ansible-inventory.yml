@@ -9,9 +9,9 @@ all:
     linux:
       hosts:
         clab-bgp-cplane-demo-leaf0:
-          ansible_host: 172.20.20.2
-        clab-bgp-cplane-demo-leaf1:
           ansible_host: 172.20.20.5
+        clab-bgp-cplane-demo-leaf1:
+          ansible_host: 172.20.20.3
         clab-bgp-cplane-demo-server1:
           ansible_host: 
         clab-bgp-cplane-demo-server2:
@@ -23,4 +23,4 @@ all:
         clab-bgp-cplane-demo-spine0:
           ansible_host: 172.20.20.4
         clab-bgp-cplane-demo-spine1:
-          ansible_host: 172.20.20.3
+          ansible_host: 172.20.20.2
