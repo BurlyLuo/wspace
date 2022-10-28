@@ -2,7 +2,8 @@
 date
 set -v
 
-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
+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
+
 
 kind create cluster --name=cilium-native-routing --config=./kind-cilium.yaml --image=kindest/node:v1.23.4
 
