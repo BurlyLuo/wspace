@@ -14,7 +14,7 @@ spec:
         app: calico-vxlan
     spec:
       containers:
-      - image: burlyluo/nettool
+      - image: localhost:5000/nettool
         name: nettoolbox
         securityContext:
           privileged: true
@@ -33,3 +33,4 @@ spec:
     port: 8080
     targetPort: 80
     nodePort: 32000
+
