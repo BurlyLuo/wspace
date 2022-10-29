@@ -14,7 +14,7 @@ spec:
         app: flannel-ipsec
     spec:
       containers:
-      - image: burlyluo/nettool
+      - image: localhost:5000/nettool
         name: nettoolbox
         securityContext:
           privileged: true

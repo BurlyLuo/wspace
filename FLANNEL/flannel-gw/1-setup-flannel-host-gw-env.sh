@@ -10,7 +10,7 @@ if [ "$(docker inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true
 fi
 
 # create a cluster with the local registry enabled in containerd
-cat <<EOF | kind create cluster --name=flannel-ipip --image=kindest/node:v1.25.3 --config=-
+cat <<EOF | kind create cluster --name=flannel-hostgw --image=kindest/node:v1.23.4 --config=-
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 networking:
@@ -46,20 +46,20 @@ data:
 EOF
 
 # prep the environment
-controller_node=$(kubectl get nodes --no-headers  -o custom-columns=NAME:.metadata.name | grep control-plane)
-kubectl taint nodes $controller_node node-role.kubernetes.io/control-plane:NoSchedule-
+controller_node=$(kubectl get nodes --no-headers  -o custom-columns=NAME:.metadata.name| grep control-plane)
+kubectl taint nodes $controller_node node-role.kubernetes.io/master:NoSchedule-
 kubectl get nodes -owide 
 
 # install CNI
 kubectl apply -f ./flannel.yaml
 
 # prep the necessary tools
-for i in $(docker ps  -a --format "table {{.Names}}"|grep flannel-ipip );
+for i in $(docker ps  -a --format "table {{.Names}}"|grep flannel-hostgw );
 do 
 echo $i;
 docker cp ./bridge $i:/opt/cni/bin/;
 docker cp /usr/bin/ping $i:/usr/bin/ping;
-# docker exec -it $i bash -c "sed -i -e 's/jp.archive.ubuntu.com\|archive.ubuntu.com\|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list";
+docker exec -it $i bash -c "sed -i -e 's/jp.archive.ubuntu.com\|archive.ubuntu.com\|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list";
 docker exec -it $i bash -c "apt-get -y update >/dev/null && apt-get -y install net-tools tcpdump lrzsz >/dev/null";
 done
 

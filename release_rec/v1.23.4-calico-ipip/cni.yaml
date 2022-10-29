@@ -2,16 +2,16 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app: flannel-ipip
-  name: flannel-ipip
+    app: calico-ipip
+  name: calico-ipip
 spec:
   selector:
     matchLabels:
-      app: flannel-ipip
+      app: calico-ipip
   template:
     metadata:
       labels:
-        app: flannel-ipip
+        app: calico-ipip
     spec:
       containers:
       - image: localhost:5000/nettool
@@ -25,11 +25,12 @@ kind: Service
 metadata:
   name: serversvc
 spec:
-  type: LoadBalancer 
+  type: NodePort
   selector:
-    app: flannel-ipip
+    app: calico-ipip
   ports:
   - name: cni
     port: 8080
     targetPort: 80
-    #nodePort: 32000
+    nodePort: 32000
+

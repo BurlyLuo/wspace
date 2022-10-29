@@ -124,7 +124,7 @@ spec:
       initContainers:
       - name: install-cni-plugin
        #image: flannelcni/flannel-cni-plugin:v1.1.0 for ppc64le and mips64le (dockerhub limitations may apply)
-        image: docker.io/rancher/mirrored-flannelcni-flannel-cni-plugin:v1.1.0
+        image: localhost:5000/mirrored-flannelcni-flannel-cni-plugin:v1.1.0
         command:
         - cp
         args:
@@ -136,7 +136,7 @@ spec:
           mountPath: /opt/cni/bin
       - name: install-cni
        #image: flannelcni/flannel:v0.19.2 for ppc64le and mips64le (dockerhub limitations may apply)
-        image: docker.io/rancher/mirrored-flannelcni-flannel:v0.19.2
+        image: localhost:5000/mirrored-flannelcni-flannel:v0.19.2
         command:
         - cp
         args:
@@ -151,7 +151,7 @@ spec:
       containers:
       - name: kube-flannel
        #image: flannelcni/flannel:v0.19.2 for ppc64le and mips64le (dockerhub limitations may apply)
-        image: docker.io/rancher/mirrored-flannelcni-flannel:v0.19.2
+        image: localhost:5000/mirrored-flannelcni-flannel:v0.19.2
         command:
         - /opt/bin/flanneld
         args:
@@ -186,7 +186,12 @@ spec:
           mountPath: /etc/kube-flannel/
         - name: xtables-lock
           mountPath: /run/xtables.lock
+        - name: tun
+          mountPath: /dev/net/tun
       volumes:
+      - name: tun
+        hostPath:
+          path: /dev/net/tun
       - name: run
         hostPath:
           path: /run/flannel
