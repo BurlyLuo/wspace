@@ -377,3 +377,7 @@ kube-system          kube-proxy-kmrqq                                    1/1    
 kube-system          kube-proxy-mvnvs                                    1/1     Running   0          2m53s   172.18.0.2    calico-ipip-worker          <none>           <none>
 kube-system          kube-scheduler-calico-ipip-control-plane            1/1     Running   0          3m13s   172.18.0.3    calico-ipip-control-plane   <none>           <none>
 local-path-storage   local-path-provisioner-684f458cdd-znrbk             1/1     Running   0          2m58s   10.244.79.3   calico-ipip-worker          <none>           <none>
+
+
+
+date
