@@ -54,7 +54,13 @@ kubectl get nodes -owide
 kubectl apply -f ./flannel.yaml
 
 # prep the necessary tools
-for i in $(docker ps  -a --format "table {{.Names}}"|grep flannel-ipip );do echo $i;docker cp ./bridge $i:/opt/cni/bin/;docker cp /usr/bin/ping $i:/usr/bin/ping;docker exec -it $i  bash -c "sed -i -e 's/jp.archive.ubuntu.com\|archive.ubuntu.com\|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list";docker exec -it $i bash -c "apt-get -y update >/dev/null && apt-get -y install net-tools tcpdump lrzsz >/dev/null";done
+for i in $(docker ps  -a --format "table {{.Names}}"|grep flannel-ipip );
+do echo $i;
+docker cp ./bridge $i:/opt/cni/bin/;
+docker cp /usr/bin/ping $i:/usr/bin/ping;
+docker exec -it $i  bash -c "sed -i -e 's/jp.archive.ubuntu.com\|archive.ubuntu.com\|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list";
+docker exec -it $i bash -c "apt-get -y update >/dev/null && apt-get -y install net-tools tcpdump lrzsz >/dev/null";
+done
 
 # deploy test pods
 kubectl apply -f cni.yaml
