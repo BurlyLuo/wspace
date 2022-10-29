@@ -2,19 +2,19 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app: bgp
-  name: bgp
+    app: calico-bgp
+  name: calico-bgp
 spec:
   selector:
     matchLabels:
-      app: bgp
+      app: calico-bgp
   template:
     metadata:
       labels:
-        app: bgp
+        app: calico-bgp
     spec:
       containers:
-      - image: burlyluo/nettool
+      - image: localhost:5000/nettool
         name: nettoolbox
         securityContext:
           privileged: true
@@ -27,7 +27,7 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: bgp
+    app: calico-bgp
   ports:
   - name: cni
     port: 8080
