@@ -1,13 +1,12 @@
 #!/bin/sh
-set -x
+set -v
+date
 
 # create registry container unless it already exists
 reg_name='kind-registry'
 reg_port='5000'
 if [ "$(docker inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true)" != 'true' ]; then
-  docker run \
-    -d --restart=always -p "127.0.0.1:${reg_port}:5000" --name "${reg_name}" \
-    registry:2
+  docker run -d --restart=always -p "127.0.0.1:${reg_port}:5000" --name "${reg_name}" registry:2
 fi
 
 # create a cluster with the local registry enabled in containerd
@@ -19,6 +18,7 @@ networking:
 nodes:
         - role: control-plane
         - role: worker
+
 
 containerdConfigPatches:
 - |-
@@ -45,14 +45,17 @@ data:
     help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
 EOF
 
-# prep the necessary utils
-
+# prep the environment
 controller_node=$(kubectl get nodes --no-headers  -o custom-columns=NAME:.metadata.name| grep control-plane)
 kubectl taint nodes $controller_node node-role.kubernetes.io/master:NoSchedule-
+kubectl get nodes -owide 
 
+# install CNI
 kubectl apply -f ./flannel.yaml
 
+# prep the necessary tools
 for i in $(docker ps  -a --format "table {{.Names}}"|grep flannel-ipip );do echo $i;docker cp ./bridge $i:/opt/cni/bin/;docker cp /usr/bin/ping $i:/usr/bin/ping;docker exec -it $i  bash -c "sed -i -e 's/jp.archive.ubuntu.com\|archive.ubuntu.com\|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list";docker exec -it $i bash -c "apt-get -y update >/dev/null && apt-get -y install net-tools tcpdump lrzsz >/dev/null";done
 
-# install the test pods
+# deploy test pods
 kubectl apply -f cni.yaml
+
