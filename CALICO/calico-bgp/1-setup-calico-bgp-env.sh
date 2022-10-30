@@ -10,7 +10,7 @@ if [ "$(docker inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true
 fi
 
 # create a cluster with the local registry enabled in containerd
-cat <<EOF | kind create cluster --name=calico-bgp --image=kindest/node:v1.23.4 --config=-
+cat <<EOF | kind create cluster --name=calico-bgp --image=kindest/node:v1.25.3 --config=-
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 networking:
@@ -47,10 +47,10 @@ EOF
 
 # prep the environment
 controller_node=$(kubectl get nodes --no-headers  -o custom-columns=NAME:.metadata.name | grep control-plane)
-kubectl taint nodes $controller_node node-role.kubernetes.io/master:NoSchedule-
+kubectl taint nodes $controller_node node-role.kubernetes.io/control-plane:NoSchedule-
 kubectl get nodes -owide 
 
-# install CNI
+# install CNI [[https://github.com/projectcalico/calico/releases/tag/v3.23.3]]
 kubectl apply -f ./calico.yaml
 
 # prep the necessary tools
@@ -59,8 +59,7 @@ do
 echo $i;
 docker cp /usr/bin/calicoctl $i:/usr/bin/calicoctl;
 docker cp /usr/bin/ping $i:/usr/bin/ping;
-docker exec -it $i bash -c "sed -i -e 's/jp.archive.ubuntu.com\|archive.ubuntu.com\|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list";
-docker exec -it $i bash -c "apt-get -y update >/dev/null && apt-get -y install net-tools tcpdump lrzsz >/dev/null";
+docker exec -it $i bash -c "apt-get -y update >/dev/null && apt-get -y install net-tools tcpdump lrzsz vim wget >/dev/null";
 done
 
 # deploy test pods
